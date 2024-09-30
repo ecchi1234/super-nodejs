@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { LogoutReqBody, RefreshTokenReqBody, RegisterReqBody } from '~/models/requests/User.requests'
+import { LogoutReqBody, RefreshTokenReqBody, RegisterReqBody, TokenPayload } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
 import usersService from '~/services/users.services'
 import { ObjectId } from 'mongodb'
@@ -37,9 +37,9 @@ export const refreshTokenController = async (
 ) => {
   const { refresh_token } = req.body
 
-  const user_id = req.decoded_refresh_token?.user_id
+  const { user_id, verify } = req.decoded_refresh_token as TokenPayload
 
-  const result = await usersService.refreshToken(user_id as string, refresh_token)
+  const result = await usersService.refreshToken({ user_id, refresh_token })
 
-  return res.json(result)
+  return res.json({ message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS, result })
 }

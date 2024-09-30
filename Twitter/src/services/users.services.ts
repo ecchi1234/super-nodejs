@@ -71,11 +71,20 @@ class UsersService {
     return { message: USERS_MESSAGES.LOGOUT_SUCCESS }
   }
 
-  async refreshToken(user_id: string, old_refresh_token: string) {
-    const [access_token, refresh_token] = await this.signAccessAndRefreshTokens(user_id)
-    // PHẢI THÊM REFRESH TOKEN CÓ THỜI GIAN HẾT HẠN BẰNG VỚI REFRESH TOKEN CŨ
-    await databaseService.refreshTokens.updateOne({ token: old_refresh_token }, { $set: { token: refresh_token } })
-    return { access_token, refresh_token }
+  async refreshToken({ user_id, refresh_token }: { user_id: string; refresh_token: string }) {
+    // chưa học đến bài có user verify nên tạm thời ntn đã
+
+    const [access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken(user_id),
+      this.signRefreshToken(user_id),
+      databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ user_id: new ObjectId(user_id), token: new_refresh_token })
+    )
+
+    return { access_token, new_refresh_token }
   }
 }
 
