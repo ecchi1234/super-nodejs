@@ -3,7 +3,7 @@ import User from '~/models/schemas/User.schema'
 import { RegisterReqBody } from '~/models/requests/User.requests'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
-import { TokenType } from '~/constants/enums'
+import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
@@ -116,7 +116,7 @@ class UsersService {
       this.signAccessAndRefreshTokens(user_id),
       databaseService.users.updateOne(
         { _id: new ObjectId(user_id) },
-        { $set: { email_verify_token: '', updated_at: new Date(), verify: 1 } }
+        { $set: { email_verify_token: '', updated_at: new Date(), verify: UserVerifyStatus.Verified } }
       )
     ])
     const [access_token, refresh_token] = token
