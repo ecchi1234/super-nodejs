@@ -243,11 +243,21 @@ export const emailVerifyTokenValidator = validate(
                 message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED
               })
             }
-            const decoded_email_verify_token = await verifyToken({
-              token: value,
-              secretOrPublickey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
-            })
-            ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+            try {
+              const decoded_email_verify_token = await verifyToken({
+                token: value,
+                secretOrPublickey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+              })
+              ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: capitalize(error.message)
+                })
+              }
+              throw error
+            }
 
             return true
           }

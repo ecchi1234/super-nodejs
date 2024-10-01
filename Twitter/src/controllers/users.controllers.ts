@@ -63,7 +63,7 @@ export const emailVerifyTokenController = async (req: Request, res: Response, ne
     return res.json({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
   }
 
-  const result = usersService.verifyEmail(user_id)
+  const result = await usersService.verifyEmail(user_id)
 
   return res.json({ message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS, result })
 }
