@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { validate } from '~/utils/validation'
 import { checkSchema } from 'express-validator'
 import usersService from '~/services/users.services'
@@ -284,6 +285,59 @@ export const forgotPasswordValidator = validate(
               throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
             }
             req.user = user
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const verifyForgotPasswordTokenValidator = validate(
+  checkSchema(
+    {
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_IS_REQUIRED
+              })
+            }
+            try {
+              const decoded_forgot_password_token = await verifyToken({
+                token: value,
+                secretOrPublickey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+              })
+              const user = await databaseService.users.findOne({
+                _id: new ObjectId(decoded_forgot_password_token.user_id)
+              })
+
+              if (user === null) {
+                throw new ErrorWithStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: USERS_MESSAGES.USER_NOT_FOUND
+                })
+              }
+
+              if (user.forgot_password_token !== value) {
+                throw new ErrorWithStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_INVALID
+                })
+              }
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: capitalize(error.message)
+                })
+              }
+              throw error
+            }
             return true
           }
         }
