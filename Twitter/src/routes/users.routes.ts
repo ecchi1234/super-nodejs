@@ -4,7 +4,8 @@ import {
   loginController,
   logOutController,
   refreshTokenController,
-  registerController
+  registerController,
+  resendVerifyEmailController
 } from '~/controllers/users.controllers'
 import {
   accessTokenValidator,
@@ -41,12 +42,29 @@ usersRouter.post('/register', registerValidator, wrapRequestHandler(registerCont
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logOutController))
 
 /**
+ * Description. Verify email when user click on the link
+ * Path: /verify-email
+ * Method: POST
+ * Body : {email-verify-token: string}
+ */
+usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyTokenController))
+
+/**
  * Description. Refresh token
  * Path: /refresh-token
  * Method: POST
  * Headers : { Authorization: Bearer <access_token> }
  * Body : {refresh_token: string}
  */
-usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyTokenController))
+usersRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
+
+/**
+ * Description. Verify email when user click on the link
+ * Path: /resend-verify-email
+ * Method: POST
+ * Headers : { Authorization: Bearer <access_token> }
+ * Body : {}
+ */
+usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
 
 export default usersRouter
