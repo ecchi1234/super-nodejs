@@ -10,7 +10,9 @@ import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
+import { TokenPayload } from '~/models/requests/User.requests'
+import { UserVerifyStatus } from '~/constants/enums'
 
 const passwordSchema: ParamSchema = {
   notEmpty: { errorMessage: USERS_MESSAGES.PASSWORD_IS_REQUIRED },
@@ -364,3 +366,20 @@ export const resetPasswordValidator = validate(
     ['body']
   )
 )
+
+export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { verify } = req.decoded_authorization as TokenPayload
+
+  // next chạy được với cả async function và sync function
+  // còn nếu dùng throw error thì chỉ chạy được với sync function
+  if (verify !== UserVerifyStatus.Verified) {
+    return next(
+      new ErrorWithStatus({
+        status: HTTP_STATUS.FORBIDDEN,
+        message: USERS_MESSAGES.USER_NOT_VERIFIED
+      })
+    )
+  }
+
+  next()
+}
