@@ -8,7 +8,7 @@ export interface UpdateMeReqBody {
   location?: string
   website?: string
   cover_photo?: string
-  user_name?: string
+  username?: string
   avatar?: string
 }
 export interface LoginReqBody {
@@ -18,6 +18,10 @@ export interface LoginReqBody {
 
 export interface VerifyEmailReqBody {
   email_verify_token: string
+}
+
+export interface GetProfileRequestParams {
+  username: string
 }
 
 export interface RegisterReqBody {
