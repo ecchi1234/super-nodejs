@@ -13,6 +13,7 @@ import { capitalize } from 'lodash'
 import { NextFunction, Request, Response } from 'express'
 import { TokenPayload } from '~/models/requests/User.requests'
 import { UserVerifyStatus } from '~/constants/enums'
+import { REGEX_USERNAME } from '~/constants/regex'
 
 const passwordSchema: ParamSchema = {
   notEmpty: { errorMessage: USERS_MESSAGES.PASSWORD_IS_REQUIRED },
@@ -466,12 +467,18 @@ export const updateMeValidator = validate(
         isString: { errorMessage: USERS_MESSAGES.USER_NAME_MUST_BE_A_STRING },
         trim: true,
         optional: true,
-        isLength: {
-          options: {
-            min: 1,
-            max: 50
-          },
-          errorMessage: USERS_MESSAGES.USER_NAME_LENGTH_MUST_BE_FROM_1_TO_50
+        custom: {
+          options: async (value, { req }) => {
+            if (!REGEX_USERNAME.test(value)) {
+              throw new Error(USERS_MESSAGES.USERNAME_INVALID)
+            }
+
+            const user = await databaseService.users.findOne({ username: value })
+
+            if (user !== null) {
+              throw new Error(USERS_MESSAGES.EMAIL_ALREADY_EXISTS)
+            }
+          }
         }
       },
       avatar: imageSchema,
