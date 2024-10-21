@@ -201,3 +201,9 @@ export const changePasswordController = async (
   const result = await usersService.changePassword(password, user_id)
   return res.json(result)
 }
+
+export const oauthController = async (req: Request, res: Response) => {
+  console.log(req.body)
+
+  return res.json({ message: USERS_MESSAGES.LOGIN_SUCCESS })
+}
