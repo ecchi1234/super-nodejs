@@ -33,8 +33,8 @@ export const handleUploadSingleImage = async (req: Request) => {
 
   return new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
-      // console.log('files', files)
-      // console.log('fields', fields)
+      console.log('files', files)
+      console.log('fields', fields)
       if (err) {
         return reject(err)
       }
