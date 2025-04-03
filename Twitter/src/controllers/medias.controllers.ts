@@ -4,8 +4,8 @@ import mediasSservice from '~/services/medias.services'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { UPLOAD_DIR } from '~/constants/dir'
 
-export const uploadSingleImageController = async (req: Request, res: Response, next: NextFunction) => {
-  const url = await mediasSservice.handleUploadSingleImage(req)
+export const uploadImageController = async (req: Request, res: Response, next: NextFunction) => {
+  const url = await mediasSservice.uploadImage(req)
   return res.json({
     result: url,
     message: USERS_MESSAGES.UPLOAD_SUCCESS
