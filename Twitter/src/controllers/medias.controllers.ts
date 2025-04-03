@@ -1,11 +1,22 @@
 import { Request, Response, NextFunction } from 'express'
-import { handleUploadSingleImage } from '~/utils/file'
 import path from 'path'
 import mediasSservice from '~/services/medias.services'
+import { USERS_MESSAGES } from '~/constants/messages'
+import { UPLOAD_DIR } from '~/constants/dir'
 
 export const uploadSingleImageController = async (req: Request, res: Response, next: NextFunction) => {
-  const result = await mediasSservice.handleUploadSingleImage(req)
+  const url = await mediasSservice.handleUploadSingleImage(req)
   return res.json({
-    result: result
+    result: url,
+    message: USERS_MESSAGES.UPLOAD_SUCCESS
+  })
+}
+
+export const serveImageController = async (req: Request, res: Response, next: NextFunction) => {
+  const { name } = req.params
+  return res.sendFile(path.resolve(UPLOAD_DIR, name), (err) => {
+    if (err) {
+      res.status((err as any).status).send('Not found')
+    }
   })
 }
