@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import path from 'path'
 import mediasSservice from '~/services/medias.services'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { UPLOAD_DIR } from '~/constants/dir'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 
 export const uploadImageController = async (req: Request, res: Response, next: NextFunction) => {
   const url = await mediasSservice.uploadImage(req)
@@ -12,11 +12,28 @@ export const uploadImageController = async (req: Request, res: Response, next: N
   })
 }
 
+export const uploadVideoController = async (req: Request, res: Response, next: NextFunction) => {
+  const url = await mediasSservice.uploadVideo(req)
+  return res.json({
+    result: url,
+    message: USERS_MESSAGES.UPLOAD_SUCCESS
+  })
+}
+
 export const serveImageController = async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.params
-  return res.sendFile(path.resolve(UPLOAD_DIR, name), (err) => {
+  return res.sendFile(path.resolve(UPLOAD_IMAGE_DIR, name), (err) => {
     if (err) {
       res.status((err as any).status).send('Not found')
+    }
+  })
+}
+
+export const serveVideoController = async (req: Request, res: Response, next: NextFunction) => {
+  const { name } = req.params
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, name), (err) => {
+    if (err) {
+      return res.status((err as any).status).send('Not found')
     }
   })
 }
