@@ -55,12 +55,12 @@ export const handleUploadVideo = async (req: Request) => {
     maxFiles: 1,
     maxFileSize: 50 * 1024 * 1024, // 50mb
     filter: function ({ name, originalFilename, mimetype }) {
-      // const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
-      // // kiểm tra file có phải là ảnh hay không
-      // if (!valid) {
-      //   // bị lỗi do @type là version 2 trong khi đang dùng formidable version 3
-      //   form.emit('error' as any, new Error('File type is not valid') as any)
-      // }
+      const valid = name === 'video' && (Boolean(mimetype?.includes('mp4')) || Boolean(mimetype?.includes('quicktime')))
+      // kiểm tra file có phải là video hay không
+      if (!valid) {
+        // bị lỗi do @type là version 2 trong khi đang dùng formidable version 3
+        form.emit('error' as any, new Error('File type is not valid') as any)
+      }
       return true
     }
   })
