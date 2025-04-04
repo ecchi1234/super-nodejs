@@ -58,6 +58,7 @@ export const serveVideoStreamController = async (req: Request, res: Response, ne
   // thường đây sẽ là chunk size, ngoài trừ đoạn cuối cùng
   const contentLength = end - start + 1
 
+  // fix lỗi common js không dùng được trong es module
   const mime = await import('mime')
   const contentType = mime.default.getType(videoPath) || 'video/*'
   const headers = {
