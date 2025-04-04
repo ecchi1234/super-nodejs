@@ -73,6 +73,13 @@ export const handleUploadVideo = async (req: Request) => {
       if (!Boolean(files?.video)) {
         return reject(new Error('File is empty'))
       }
+      const videos = files.video as File[]
+
+      videos.forEach((video) => {
+        const extension = getExtension(video.originalFilename as string)
+        fs.renameSync(video.filepath, video.filepath + '.' + extension)
+        video.newFilename = video.newFilename + '.' + extension
+      })
       resolve(files.video as File[])
     })
   })
@@ -82,4 +89,9 @@ export const getNameFromFullName = (fullName: string) => {
   const nameArr = fullName.split('.')
   nameArr.pop()
   return nameArr.join('')
+}
+
+export const getExtension = (fullName: string) => {
+  const nameArr = fullName.split('.')
+  return nameArr[nameArr.length - 1]
 }
