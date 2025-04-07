@@ -4,6 +4,7 @@ import sharp from 'sharp'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import path from 'path'
 import fs from 'fs'
+import fsPromise from 'fs/promises'
 import { isProduction } from '~/constants/config'
 import { config } from 'dotenv'
 import { MediaType } from '~/constants/enums'
@@ -56,11 +57,13 @@ class MediasService {
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
         await encodeHLSWithMultipleVideoStreams(file.filepath)
+        await fsPromise.unlink(file.filepath)
+        const newName = getNameFromFullName(file.newFilename)
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video/${file.newFilename}`
-            : `http://localhost:${process.env.PORT}/static/video/${file.newFilename}`,
-          type: MediaType.Video
+            ? `${process.env.HOST}/static/video-hls/${newName}`
+            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}`,
+          type: MediaType.HLS
         }
       })
     )
