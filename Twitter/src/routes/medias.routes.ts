@@ -4,7 +4,8 @@ import { Router } from 'express'
 import {
   uploadImageController,
   uploadVideoController,
-  uploadVideoHLSController
+  uploadVideoHLSController,
+  videoStatusController
 } from '~/controllers/medias.controllers'
 
 const mediasRouter = Router()
@@ -27,6 +28,13 @@ mediasRouter.post(
   accessTokenValidator,
   verifiedUserValidator,
   wrapRequestHandler(uploadVideoHLSController)
+)
+
+mediasRouter.get(
+  '/video-status/:id',
+  accessTokenValidator,
+  verifiedUserValidator,
+  wrapRequestHandler(videoStatusController)
 )
 
 export default mediasRouter

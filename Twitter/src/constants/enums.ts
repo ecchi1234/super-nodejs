@@ -16,3 +16,10 @@ export enum MediaType {
   Video,
   HLS
 }
+
+export enum EncodingStatus {
+  Pending, // Đang chờ ở hàng đợi
+  Processing, // Đang encode
+  Success, // Thành công
+  Failed // Bị lỗi
+}

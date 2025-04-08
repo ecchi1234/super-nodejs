@@ -61,5 +61,6 @@ export const USERS_MESSAGES = {
   USERNAME_EXISTED: 'Username existed',
   OLD_PASSWORD_NOT_MATCH: 'Old password not match',
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
-  UPLOAD_SUCCESS: 'Upload success'
+  UPLOAD_SUCCESS: 'Upload success',
+  GET_VIDEO_STATUS_SUCCESS: 'Get video status success'
 } as const
