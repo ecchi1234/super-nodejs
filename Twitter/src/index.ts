@@ -17,7 +17,7 @@ const port = process.env.PORT || 4000
 
 app.use(cors())
 
-databaseService.connect()
+databaseService.connect().then(() => databaseService.indexUsers())
 
 // const mgcClient = new MongoClient(
 //   `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@twitter.j75pm.mongodb.net/?retryWrites=true&w=majority&appName=Twitter`
