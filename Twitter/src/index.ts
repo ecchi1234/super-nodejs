@@ -9,6 +9,7 @@ import { config } from 'dotenv'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 import cors from 'cors'
+import { MongoClient } from 'mongodb'
 
 config()
 
@@ -17,6 +18,31 @@ const port = process.env.PORT || 4000
 app.use(cors())
 
 databaseService.connect()
+
+// const mgcClient = new MongoClient(
+//   `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@twitter.j75pm.mongodb.net/?retryWrites=true&w=majority&appName=Twitter`
+// )
+
+// const db = mgcClient.db('earth')
+
+// // Tạo 1000 document vào collection users
+// const users = db.collection('users')
+
+// const usersData = []
+// function getRandomNumber() {
+//   return Math.floor(Math.random() * 100) + 1
+// }
+
+// for (let i = 0; i < 1000; i++) {
+//   usersData.push({
+//     name: 'user' + (i + 1),
+//     age: getRandomNumber(),
+//     gender: i % 2 === 0 ? 'male' : 'female',
+//     address: i === 23 ? 'Hoa Binh, Viet Nam' : ''
+//   })
+// }
+
+// users.insertMany(usersData)
 
 //tạo folder upload
 initFolder()
