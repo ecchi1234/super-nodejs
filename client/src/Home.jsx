@@ -22,6 +22,7 @@ const getGoogleOAuthUrl = () => {
       "https://www.googleapis.com/auth/userinfo.profile",
     ].join(" "),
     prompt: "consent",
+    access_type: "offline",
   };
   const queryString = new URLSearchParams(query).toString();
   return `${url}?${queryString}`;

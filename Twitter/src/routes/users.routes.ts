@@ -47,11 +47,12 @@ const usersRouter = Router()
 usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**
- * Description. Login a user
+ * Description. OAuth login with google
  * Path: /oath/google
  * Method: GET
+ * Query: { code: string }
  */
-usersRouter.get('/oauth/google', loginValidator, wrapRequestHandler(oauthController))
+usersRouter.get('/oauth/google', wrapRequestHandler(oauthController))
 
 /**
  * Description. Register a new user
