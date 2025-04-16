@@ -183,12 +183,36 @@ class UsersService {
       throw new ErrorWithStatus({ message: USERS_MESSAGES.GMAIL_NOT_VERIFIED, status: HTTP_STATUS.BAD_REQUEST })
     }
     // Kiểm tra email đã được đăng ký hay chưa
-    const isEmailExisted = await this.checkEmailExist(userInfo.email)
+    const user = await databaseService.users.findOne({ email: userInfo.email })
     // Nếu tồn tại thì đã đăng ký rồi nên cho login vào
-    if (isEmailExisted) {
-    }
+    if (user) {
+      const [access_token, refresh_token] = await this.signAccessAndRefreshTokens({
+        user_id: user._id.toString(),
+        verify: user.verify
+      })
 
-    // Không thì tạo mới
+      const { iat, exp } = await this.decodeRefreshToken(refresh_token)
+
+      await databaseService.refreshTokens.insertOne(
+        new RefreshToken({ user_id: new ObjectId(user._id), token: refresh_token, iat, exp })
+      )
+
+      return { access_token, refresh_token, newUser: 0, verify: user.verify }
+    } else {
+      // random string password
+      const password = Math.random().toString(36).substring(2, 15)
+
+      // Không thì tạo mới
+      const data = await this.register({
+        email: userInfo.email,
+        name: userInfo.name,
+        date_of_birth: new Date().toISOString(),
+        password: userInfo.id,
+        confirm_password: password
+      })
+
+      return { ...data, newUser: 1, verify: UserVerifyStatus.Unverified }
+    }
   }
 
   async login({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
