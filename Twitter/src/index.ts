@@ -10,6 +10,7 @@ import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 import cors from 'cors'
 import { MongoClient } from 'mongodb'
+import tweetsRouter from './routes/tweets.routes'
 
 config()
 
@@ -56,6 +57,7 @@ app.use(express.json())
 
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
 
 // serve static file cách 2: sử dụng router
 app.use('/static', staticRouter)
