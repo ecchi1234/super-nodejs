@@ -103,12 +103,14 @@ export const createTweetValidator = validate(
         options: (value, { req }) => {
           // Yêu cầu mỗi phần tử trong array là Media
           if (
-            value.every((item: any) => {
+            value.some((item: any) => {
               return typeof item.url !== 'string' || !mediaTypes.includes(item.type)
             })
           ) {
             throw new Error(TWEETS_MESSAGES.MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT)
           }
+
+          return true
         }
       }
     }
