@@ -85,3 +85,10 @@ export const BOOKMARKS_MESSAGES = {
   ALREADY_BOOKMARKED: 'Already bookmarked',
   ALREADY_UNBOOKMARKED: 'Already unbookmarked'
 } as const
+
+export const LIKES_MESSAGES = {
+  LIKE_SUCCESSFULLY: 'Like success',
+  UNLIKE_SUCCESSFULLY: 'Unlike success',
+  ALREADY_LIKED: 'Already liked',
+  ALREADY_UNLIKES: 'Already unliked'
+} as const
