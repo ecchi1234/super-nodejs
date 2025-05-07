@@ -67,6 +67,7 @@ export const USERS_MESSAGES = {
 } as const
 
 export const TWEETS_MESSAGES = {
+  GET_TWEET_SUCCESS: 'Get tweet success',
   CREATE_SUCCESS: 'Create tweet success',
   INVALID_TYPE: 'Invalid type',
   INVALID_AUDIENCE: 'Invalid audience',
@@ -78,7 +79,8 @@ export const TWEETS_MESSAGES = {
   MENTIONS_MUST_BE_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
   MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT: 'Medias must be an array of media object',
   INVALID_TWEET_ID: 'Invalid tweet id',
-  TWEET_NOT_FOUND: 'Tweet not found'
+  TWEET_NOT_FOUND: 'Tweet not found',
+  TWEET_IS_NOT_PUBLIC: 'Tweet is not public'
 } as const
 
 export const BOOKMARKS_MESSAGES = {

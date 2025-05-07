@@ -532,3 +532,17 @@ export const changePasswordValidator = validate(
     ['body']
   )
 )
+
+export const isUserLoggedInValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+    // req.header và req.headers
+    // const { user_id } = req.decoded_authorization as TokenPayload
+    // if (user_id) {
+    //   return middleware(req, res, next)
+    // }
+    return next()
+  }
+}

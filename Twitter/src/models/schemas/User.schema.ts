@@ -32,7 +32,7 @@ export default class User {
   email_verify_token: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token: string // jwt hoặc '' nếu đã xác thực email
   verify: UserVerifyStatus
-  twitter_circle?: ObjectId[] // danh sách người dùng trong Twitter Circle
+  twitter_circle: ObjectId[] // danh sách người dùng trong Twitter Circle
   bio: string // optional
   location: string // optional
   website: string // optional
