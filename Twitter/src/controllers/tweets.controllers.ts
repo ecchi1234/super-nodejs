@@ -4,6 +4,7 @@ import { TweetRequestBody } from '~/models/requests/Tweet.requests'
 import tweetService from '~/services/tweets.services'
 import { TokenPayload } from '~/models/requests/User.requests'
 import { TWEETS_MESSAGES } from '~/constants/messages'
+import { TweetType } from '~/constants/enums'
 
 export const createTweetController = async (req: Request<ParamsDictionary, any, TweetRequestBody>, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayload
@@ -24,5 +25,27 @@ export const getTweetController = async (req: Request, res: Response) => {
   return res.json({
     message: TWEETS_MESSAGES.GET_TWEET_SUCCESS,
     result: tweet
+  })
+}
+
+export const getTweetChildrenController = async (req: Request, res: Response) => {
+  const tweet_type = Number(req.query.tweet_type as string) as TweetType
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const { total, tweets } = await tweetService.getTweetChildren({
+    tweet_id: req.params.tweet_id,
+    tweet_type,
+    limit,
+    page
+  })
+  return res.json({
+    message: TWEETS_MESSAGES.GET_TWEET_CHILDREN_SUCCESS,
+    result: {
+      tweets,
+      tweet_type,
+      limit,
+      page,
+      total_page: Math.ceil(total / limit)
+    }
   })
 }

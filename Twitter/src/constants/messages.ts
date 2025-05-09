@@ -68,6 +68,7 @@ export const USERS_MESSAGES = {
 
 export const TWEETS_MESSAGES = {
   GET_TWEET_SUCCESS: 'Get tweet success',
+  GET_TWEET_CHILDREN_SUCCESS: 'Get tweet children success',
   CREATE_SUCCESS: 'Create tweet success',
   INVALID_TYPE: 'Invalid type',
   INVALID_AUDIENCE: 'Invalid audience',
