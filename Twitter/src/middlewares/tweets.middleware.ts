@@ -12,20 +12,20 @@ import { validate } from '~/utils/validation'
 import { NextFunction, Request, Response } from 'express'
 import Tweet from '~/models/schemas/Tweet.schema'
 
-const tweetType = numberEnumToArray(TweetType)
-const tweetAudience = numberEnumToArray(TweetAudience)
+const tweetTypes = numberEnumToArray(TweetType)
+const tweetAudiences = numberEnumToArray(TweetAudience)
 const mediaTypes = numberEnumToArray(MediaType)
 export const createTweetValidator = validate(
   checkSchema({
     type: {
       isIn: {
-        options: [tweetType],
+        options: [tweetTypes],
         errorMessage: TWEETS_MESSAGES.INVALID_TYPE
       }
     },
     audience: {
       isIn: {
-        options: [tweetAudience],
+        options: [tweetAudiences],
         errorMessage: TWEETS_MESSAGES.INVALID_AUDIENCE
       }
     },
@@ -283,3 +283,43 @@ export const audienceValidator = wrapRequestHandler(async (req: Request, res: Re
   }
   return next()
 })
+
+export const getTweetChildrenValidator = validate(
+  checkSchema(
+    {
+      tweet_type: {
+        isIn: {
+          options: [tweetTypes],
+          errorMessage: TWEETS_MESSAGES.INVALID_TYPE
+        }
+      },
+      limit: {
+        isNumeric: true,
+        custom: {
+          options: async (value, { req }) => {
+            const num = Number(value)
+            if (num > 100 || num < 1) {
+              throw new Error('Limit must be between 1 and 100')
+            }
+
+            return true
+          }
+        }
+      },
+      page: {
+        isNumeric: true,
+        custom: {
+          options: async (value, { req }) => {
+            const num = Number(value)
+            if (num < 1) {
+              throw new Error('Minimum is 1')
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['query']
+  )
+)
