@@ -16,9 +16,9 @@ import { hashPassword } from '~/utils/crypto'
  */
 
 // Mật khẩu cho các fake user
-const PASSWORD = 'Duoc123!'
+const PASSWORD = 'Chi@1234'
 // ID của tài khoản của mình, dùng để follow người khác
-const MYID = new ObjectId('64ae518e12de778b00d04657')
+const MYID = new ObjectId('67ee5c34c762460f5c091c36')
 
 // Số lượng user được tạo, mỗi user sẽ mặc định tweet 2 cái
 const USER_COUNT = 400
