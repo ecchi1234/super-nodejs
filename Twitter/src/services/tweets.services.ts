@@ -234,6 +234,27 @@ class TweetsService {
     })
     return { tweets, total }
   }
+
+  async getNewsFeed({ user_id, limit, page }: { user_id: string; limit: number; page: number }) {
+    console.log(user_id)
+    const followed_user_ids = await databaseService.followers
+      .find(
+        { user_id: new ObjectId(user_id) },
+        {
+          projection: {
+            followed_user_id: 1,
+            _id: 0
+          },
+          skip: (page - 1) * limit,
+          limit
+        }
+      )
+      .toArray()
+    const ids = followed_user_ids.map((item) => item.followed_user_id)
+    ids.push(new ObjectId(user_id))
+    // console.log(followed_user_ids)
+    return ids
+  }
 }
 
 const tweetService = new TweetsService()
