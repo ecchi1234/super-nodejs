@@ -93,6 +93,12 @@ class TweetsService {
           }
         },
         {
+          $skip: (page - 1) * limit // công thức phân trang
+        },
+        {
+          $limit: limit
+        },
+        {
           $lookup: {
             from: 'hashtags',
             localField: 'hashtags',
@@ -195,12 +201,6 @@ class TweetsService {
           $project: {
             tweet_children: 0
           }
-        },
-        {
-          $skip: (page - 1) * limit // công thức phân trang
-        },
-        {
-          $limit: limit
         }
       ])
       .toArray()
