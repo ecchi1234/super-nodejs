@@ -64,7 +64,7 @@ export const getNewsFeedController = async (
 
   return res.json({
     message: 'oke',
-    result
+    result: { tweets: result.tweets, limit, page, total_page: Math.ceil(result.total / limit) }
   })
   // const result = await tweetService.getNewsFeed(req.decoded_authorization?.user_id, req.query)
 }
