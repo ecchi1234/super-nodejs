@@ -12,6 +12,7 @@ import cors from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouter from '~/routes/bookmarks.routes'
 import likesRouter from '~/routes/likes.routes'
+import searchRouter from '~/routes/search.routes'
 // import '~/utils/fake'
 
 config()
@@ -62,6 +63,7 @@ app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
 app.use('/likes', likesRouter)
+app.use('/search', searchRouter)
 // serve static file cách 2: sử dụng router
 app.use('/static', staticRouter)
 // serve static file cách 1: sử dụng express.static
