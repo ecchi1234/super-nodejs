@@ -26,6 +26,7 @@ databaseService.connect().then(() => {
   databaseService.indexVideoStatus()
   databaseService.indexRefreshTokens()
   databaseService.indexFollowers()
+  databaseService.indexTweets()
 })
 
 // const mgcClient = new MongoClient(
