@@ -26,7 +26,8 @@ class SearchService {
     if (media_type) {
       if (media_type === MediaTypeQuery.Image) {
         $match['medias.type'] = MediaType.Image
-      } else if (media_type === MediaTypeQuery.Video) {
+      }
+      if (media_type === MediaTypeQuery.Video) {
         $match['medias.type'] = {
           $in: [MediaType.Video, MediaType.HLS]
         }
