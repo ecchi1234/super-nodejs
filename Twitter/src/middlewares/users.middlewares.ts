@@ -371,7 +371,12 @@ export const forgotPasswordValidator = validate(
       email: {
         trim: true,
         isEmail: { errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID },
-        normalizeEmail: true,
+        normalizeEmail: {
+          options: {
+            gmail_remove_dots: false,
+            gmail_remove_subaddress: false
+          }
+        },
         custom: {
           options: async (value, { req }) => {
             const user = await databaseService.users.findOne({
