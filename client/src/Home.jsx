@@ -50,16 +50,16 @@ export default function Home() {
       </div>
       <video controls width={500}>
         <source
-          src="http://localhost:4000/static/video-stream/108db54f6f1edab3a40299100.mp4"
+          // src="http://localhost:4000/static/video-stream/108db54f6f1edab3a40299100.mp4"
           type="video/mp4"
         />
       </video>
       <h2>HLS Streaming</h2>
       <MediaPlayer
         title="Sprite Fight"
-        src={{
-          src: "http://localhost:4000/static/video-hls/fFlxrS6QH4n31tXHa4EUB/master.m3u8",
-        }}
+        // src={{
+        //   src: "http://localhost:4000/static/video-hls/fFlxrS6QH4n31tXHa4EUB/master.m3u8",
+        // }}
         aspectRatio="16:9"
       >
         <MediaProvider />
