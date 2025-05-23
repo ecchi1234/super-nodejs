@@ -14,7 +14,7 @@ import bookmarksRouter from '~/routes/bookmarks.routes'
 import likesRouter from '~/routes/likes.routes'
 import searchRouter from '~/routes/search.routes'
 // import '~/utils/fake'
-import '~/utils/s3'
+// import '~/utils/s3'
 
 config()
 
