@@ -57,9 +57,9 @@ export default function Home() {
       <h2>HLS Streaming</h2>
       <MediaPlayer
         title="Sprite Fight"
-        // src={{
-        //   src: "http://localhost:4000/static/video-hls/fFlxrS6QH4n31tXHa4EUB/master.m3u8",
-        // }}
+        src={{
+          src: "http://localhost:4000/static/video-hls/dAlcbNEJ2Om1CPHZKYf5A/master.m3u8",
+        }}
         aspectRatio="16:9"
       >
         <MediaProvider />

@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { getNameFromFullName, handleUploadImage, handleUploadVideo } from '~/utils/file'
+import { getFiles, getNameFromFullName, handleUploadImage, handleUploadVideo } from '~/utils/file'
 import sharp from 'sharp'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import path from 'path'
@@ -49,6 +49,15 @@ class Queue {
         await encodeHLSWithMultipleVideoStreams(videoPath)
         this.items.shift()
         await fsPromise.unlink(videoPath)
+        const files = getFiles(path.resolve(UPLOAD_VIDEO_DIR, idName))
+
+        // files.map((filePath) => {
+        //   const fileName
+        //   return uploadFileToS3({
+        //     filePath,
+        //     fileName: `videos-hls/${idName}/${filePath.split('/').pop()}`,
+        //   })
+        // })
         await databaseService.videoStatus.updateOne(
           { name: idName },
           { $set: { status: EncodingStatus.Success }, $currentDate: { updated_at: true } }
@@ -148,8 +157,8 @@ class MediasService {
         queue.enqueue(file.filepath)
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video-hls/${newName}.m3u8`
-            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}.m3u8`,
+            ? `${process.env.HOST}/static/video-hls/${newName}/master.m3u8`
+            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}/master.m3u8`,
           type: MediaType.HLS
         }
       })
