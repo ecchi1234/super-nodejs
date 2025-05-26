@@ -1,7 +1,9 @@
-import { S3Client } from '@aws-sdk/client-s3'
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { config } from 'dotenv'
 import { Upload } from '@aws-sdk/lib-storage'
 import fs from 'fs'
+import { Response } from 'express'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 config()
 
@@ -25,7 +27,7 @@ export const uploadFileToS3 = async ({
   const parallelUploads3 = new Upload({
     client: client,
     params: {
-      Bucket: 'chi-twitter-clone-ap-southeast-1-2025',
+      Bucket: process.env.S3_BUCKET_NAME as string, // replace with your bucket name
       Key: fileName,
       Body: fs.readFileSync(filePath),
       ContentType: contentType
@@ -51,4 +53,18 @@ export const uploadFileToS3 = async ({
   })
 
   return parallelUploads3.done()
+}
+
+export const sendFileFromS3 = async (res: Response, filepath: string) => {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME as string, // replace with your bucket name
+      Key: filepath // the key of the file in S3
+    })
+    const data = await client.send(command)
+
+    ;(data.Body as any).pipe(res)
+  } catch (error) {
+    res.status(HTTP_STATUS.NOT_FOUND).send('File not found')
+  }
 }

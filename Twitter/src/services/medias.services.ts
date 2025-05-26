@@ -14,6 +14,7 @@ import databaseService from './database.services'
 import VideoStatus from '~/models/schemas/VideoStatus.schema'
 import { uploadFileToS3 } from '~/utils/s3'
 import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
+import { rimrafSync } from 'rimraf'
 
 config()
 
@@ -48,16 +49,26 @@ class Queue {
       try {
         await encodeHLSWithMultipleVideoStreams(videoPath)
         this.items.shift()
-        await fsPromise.unlink(videoPath)
         const files = getFiles(path.resolve(UPLOAD_VIDEO_DIR, idName))
+        const mime = await import('mime')
 
-        // files.map((filePath) => {
-        //   const fileName
-        //   return uploadFileToS3({
-        //     filePath,
-        //     fileName: `videos-hls/${idName}/${filePath.split('/').pop()}`,
-        //   })
-        // })
+        await Promise.all(
+          files.map((filePath) => {
+            const fileName = 'videos-hls' + slash(filePath).replace(slash(path.resolve(UPLOAD_VIDEO_DIR)), '')
+            return uploadFileToS3({
+              filePath,
+              fileName,
+              contentType: mime.default.getType(filePath) as string
+            })
+          })
+        )
+
+        await Promise.all([
+          fsPromise.unlink(videoPath),
+          // có thể dùng với rimraf npm cũng được
+          // rimrafSync(path.resolve(UPLOAD_VIDEO_DIR, idName)),
+          fsPromise.rm(path.resolve(UPLOAD_VIDEO_DIR, idName), { recursive: true, force: true })
+        ])
         await databaseService.videoStatus.updateOne(
           { name: idName },
           { $set: { status: EncodingStatus.Success }, $currentDate: { updated_at: true } }

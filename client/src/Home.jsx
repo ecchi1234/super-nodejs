@@ -58,7 +58,7 @@ export default function Home() {
       <MediaPlayer
         title="Sprite Fight"
         src={{
-          src: "http://localhost:4000/static/video-hls/dAlcbNEJ2Om1CPHZKYf5A/master.m3u8",
+          src: "http://localhost:4000/static/video-hls/_QAtJUH_PY31mppeLbFqC/master.m3u8",
         }}
         aspectRatio="16:9"
       >
