@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from 'express'
-const app = express()
 import usersRouter from '~/routes/users.routes'
 import databaseService from '~/services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
@@ -13,6 +12,8 @@ import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouter from '~/routes/bookmarks.routes'
 import likesRouter from '~/routes/likes.routes'
 import searchRouter from '~/routes/search.routes'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
 // import '~/utils/fake'
 // import '~/utils/s3'
 
@@ -20,6 +21,8 @@ config()
 
 const port = process.env.PORT || 4000
 
+const app = express()
+const httpServer = createServer(app)
 app.use(cors())
 
 databaseService.connect().then(() => {
@@ -72,6 +75,20 @@ app.use('/static', staticRouter)
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 
 app.use(defaultErrorHandler)
-app.listen(port, () => {
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:3000' // hoặc địa chỉ frontend của bạn
+  }
+})
+
+io.on('connection', (socket) => {
+  console.log(`${socket.id} user connected`)
+  socket.on('disconnect', () => {
+    console.log(`${socket.id} user disconnected`)
+  })
+})
+
+httpServer.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
