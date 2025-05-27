@@ -7,6 +7,10 @@ export default function Chat() {
     const socket = io(VITE_API_URL);
     socket.on("connect", () => {
       console.log("Connected: ", socket.id);
+      socket.emit("hello", "Hello from client!");
+      socket.on("hi", (data) => {
+        console.log(data);
+      });
     });
     socket.on("disconnect", () => {
       console.log("Disconnected: ", socket.id);
