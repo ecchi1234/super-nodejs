@@ -162,7 +162,7 @@ usersRouter.patch(
  * Path: /:username
  * Method: GET
  */
-usersRouter.patch('/:username', wrapRequestHandler(getProfileController))
+usersRouter.get('/:username', wrapRequestHandler(getProfileController))
 
 /**
  * Description. Follow someone
