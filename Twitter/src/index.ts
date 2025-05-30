@@ -1,11 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express'
 import usersRouter from '~/routes/users.routes'
 import databaseService from '~/services/database.services'
-import { defaultErrorHandler } from './middlewares/error.middlewares'
+import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouter from '~/routes/medias.routes'
-import { initFolder } from './utils/file'
+import { initFolder } from '~/utils/file'
 import { config } from 'dotenv'
-import { UPLOAD_VIDEO_DIR } from './constants/dir'
+import { UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import staticRouter from '~/routes/static.routes'
 import cors from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
@@ -14,6 +14,7 @@ import likesRouter from '~/routes/likes.routes'
 import searchRouter from '~/routes/search.routes'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import Conversation from '~/models/schemas/Conversations.schema'
 // import '~/utils/fake'
 // import '~/utils/s3'
 
@@ -97,9 +98,16 @@ io.on('connection', (socket) => {
   }
   console.log(users)
 
-  socket.on('private message', (data) => {
+  socket.on('private message', async (data) => {
     const receiver_socket_id = users[data.to]?.socket_id
     if (!receiver_socket_id) return
+    await databaseService.conversations.insertOne(
+      new Conversation({
+        sender_id: data.from,
+        receiver_id: data.to,
+        content: data.content
+      })
+    )
     socket.to(receiver_socket_id).emit('receive private message', {
       content: data.content,
       from: user_id
