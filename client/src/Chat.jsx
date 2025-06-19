@@ -15,7 +15,7 @@ const usernames = [
 ];
 export default function Chat() {
   const [value, setValue] = useState("");
-  const [conversations, setMessages] = useState([]);
+  const [conversations, setConversations] = useState([]);
   const [receiver, setReceiver] = useState("");
   const getProfile = (username) => {
     axios
@@ -34,7 +34,7 @@ export default function Chat() {
     socket.connect();
     socket.on("receive_message", (data) => {
       const { payload } = data;
-      setMessages((prevMessages) => [...prevMessages, payload]);
+      setConversations((prevMessages) => [...prevMessages, payload]);
     });
     return () => {
       socket.disconnect();
@@ -56,7 +56,7 @@ export default function Chat() {
           },
         })
         .then((res) => {
-          setMessages(res.data.result.conversations);
+          setConversations(res.data.result.conversations);
         });
     }
   }, [receiver]);
@@ -74,8 +74,8 @@ export default function Chat() {
 
     setValue("");
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
+    setConversations((conversations) => [
+      ...conversations,
       { ...conversation, _id: new Date().getTime() },
     ]);
   };
