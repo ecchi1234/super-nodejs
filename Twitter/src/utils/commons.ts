@@ -34,6 +34,4 @@ export const verifyAccessToken = async (access_token: string, req?: Request) => 
       message: capitalize((error as JsonWebTokenError).message)
     })
   }
-
-  return true
 }
