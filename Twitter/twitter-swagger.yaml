@@ -1,0 +1,182 @@
+openapi: 3.0.4
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: |-
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: https://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.12
+externalDocs:
+  description: Find out more about Swagger
+  url: https://swagger.io
+servers:
+  - url: http://localhost:4000
+    description: Twitter Clone API
+tags:
+  - name: users
+    description: Các API liên quan đến user
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Đăng nhập
+      description: Đăng nhập vào hệ thống
+      operationId: login
+      requestBody:
+        description: Thông tin đăng nhập
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+
+        required: true
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Đăng nhập thành công
+                  result:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+
+        '422':
+          description: Invalid input
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Lấy thông tin user
+      description: Lấy thông tin user
+      operationId: getMe
+      security:
+        - BearerAuth: []
+      responses:
+        default:
+          description: Lấy thông tin user thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Lấy thông tin user thành công
+                  result:
+                    $ref: '#/components/schemas/User'
+components:
+  schemas:
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: chitest16@gmail.com
+        password:
+          type: string
+          example: Chi@1234
+    SuccessAuthentication:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdlZTVjMzRjNzYyNDYwZjVjMDkxYzM2IiwidG9rZW5fdHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE3NTA4MjQ5MDksImV4cCI6MTc1MDgyNTgwOX0.ToYoWvDEtlBEiYGKJnfk-HFO5aaj4o-qRKjGXBSJYtk
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdlZTVjMzRjNzYyNDYwZjVjMDkxYzM2IiwidG9rZW5fdHlwZSI6eyIwIjoiQWNjZXNzVG9rZW4iLCIxIjoiUmVmcmVzaFRva2VuIiwiMiI6IkZvcmdvdFBhc3N3b3JkVG9rZW4iLCIzIjoiRW1haWxWZXJpZnlUb2tlbiIsIkFjY2Vzc1Rva2VuIjowLCJSZWZyZXNoVG9rZW4iOjEsIkZvcmdvdFBhc3N3b3JkVG9rZW4iOjIsIkVtYWlsVmVyaWZ5VG9rZW4iOjN9LCJ2ZXJpZnkiOjEsImlhdCI6MTc1MDgyNDkwOSwiZXhwIjoxNzU5NDY0OTA5fQ.L44g-kPHnj80CRaDGCgXjNgX-dWq6LotOhEjz3i6lZA
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          description: ID duy nhất của người dùng
+          example: '67ee5c34c762460f5c091c36'
+        name:
+          type: string
+          description: Tên của người dùng
+          example: 'Nguyễn Văn A'
+        email:
+          type: string
+          format: email
+          description: Địa chỉ email của người dùng
+          example: 'nguyen.van.a@example.com'
+        date_of_birth:
+          type: string
+          format: ISO8601
+          description: Ngày sinh của người dùng (ISO 8601 format)
+          example: '1995-10-26T00:00:00.000Z' # Một ngày sinh cụ thể
+        created_at:
+          type: string
+          format: ISO8601
+          description: Thời gian tạo tài khoản (ISO 8601 format)
+          example: '2024-01-15T10:30:00.123Z' # Một thời điểm tạo cụ thể
+        updated_at:
+          type: string
+          format: ISO8601
+          description: Thời gian cập nhật tài khoản gần nhất (ISO 8601 format)
+          example: '2025-06-25T15:11:46.000Z' # Thời điểm hiện tại (25/06/2025)
+        verify:
+          $ref: '#/components/schemas/UserVerifyStatus'
+        twitter_circle:
+          type: array
+          items:
+            type: string
+            format: MongoId
+          description: Danh sách ID của các người dùng trong Twitter Circle
+          example: ['67ee5c34c762460f5c091c36', '67ee5c34c762460f5c091c37'] # Một danh sách
+        bio:
+          type: string
+          description: Tiểu sử của người dùng
+          example: 'Một người đam mê công nghệ và thích khám phá những điều mới mẻ.' # Một đoạn bio cụ thể
+        location:
+          type: string
+          description: Vị trí của người dùng
+          example: 'Hà Nội, Việt Nam' # Một địa điểm cụ thể
+        website:
+          type: string
+          format: uri
+          description: Trang web cá nhân của người dùng
+          example: 'https://www.example.com/nguyenvana' # Một URL cụ thể
+        username:
+          type: string
+          description: Tên người dùng duy nhất
+          example: 'nguyenvana95' # Một username cụ thể
+        avatar:
+          type: string
+          format: uri
+          description: URL ảnh đại diện của người dùng
+          example: 'https://example.com/avatars/nguyenvana.jpg' # Một URL ảnh cụ thể
+        cover_photo:
+          type: string
+          format: uri
+          description: URL ảnh bìa của người dùng
+          example: 'https://example.com/covers/nguyenvana_cover.png' # Một URL ảnh cụ thể
+    UserVerifyStatus:
+      type: number
+      enum: [Unverified, Verified, Banned]
+      example: 1
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Sử dụng token JWT để xác thực. Token có thể được lấy sau khi đăng nhập thành công.
+        Ví dụ: `Authorization: Bearer <token>`

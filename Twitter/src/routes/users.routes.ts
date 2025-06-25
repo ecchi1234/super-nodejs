@@ -39,10 +39,36 @@ import { wrapRequestHandler } from '~/utils/handlers'
 const usersRouter = Router()
 
 /**
- * Description. Login a user
- * Path: /login
- * Method: POST
- * Body : { email: string, password: string }
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Đăng nhập
+ *     description: Đăng nhập vào hệ thống
+ *     operationId: login
+ *     requestBody:
+ *       description: Thông tin đăng nhập
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       '200':
+ *         description: Đăng nhập thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Đăng nhập thành công
+ *                 result:
+ *                   $ref: '#/components/schemas/SuccessAuthentication'
+ *       '422':
+ *         description: Invalid input
  */
 usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
