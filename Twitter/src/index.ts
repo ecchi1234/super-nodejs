@@ -15,16 +15,16 @@ import searchRouter from '~/routes/search.routes'
 import { createServer } from 'http'
 import conversationsRouter from '~/routes/conversations.routes'
 import initSocket from './utils/socket'
-import YAML from 'yaml'
-import fs from 'fs'
-import path from 'path'
+// import YAML from 'yaml'
+// import fs from 'fs'
+// import path from 'path'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 // import '~/utils/fake'
 // import '~/utils/s3'
 
-const file = fs.readFileSync(path.resolve('twitter-swagger.yaml'), 'utf8')
-const swaggerDocument = YAML.parse(file)
+// const file = fs.readFileSync(path.resolve('twitter-swagger.yaml'), 'utf8')
+// const swaggerDocument = YAML.parse(file)
 
 const options: swaggerJsdoc.Options = {
   // failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
@@ -33,20 +33,20 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: 'X clone (Twitter API)',
       version: '1.0.0'
-    },
-    components: {
-      securitySchemes: {
-        BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          description:
-            'Sử dụng token JWT để xác thực. Token có thể được lấy sau khi đăng nhập thành công. Ví dụ: `Authorization: Bearer <token>`'
-        }
-      }
     }
+    // components: {
+    //   securitySchemes: {
+    //     BearerAuth: {
+    //       type: 'http',
+    //       scheme: 'bearer',
+    //       bearerFormat: 'JWT',
+    //       description:
+    //         'Sử dụng token JWT để xác thực. Token có thể được lấy sau khi đăng nhập thành công. Ví dụ: `Authorization: Bearer <token>`'
+    //     }
+    //   }
+    // }
   },
-  apis: ['./src/routes/*.routes.ts', './src/models/requests/*.requests.ts']
+  apis: ['./openapi/*.yaml']
 }
 
 const openapiSpecification = swaggerJsdoc(options)
