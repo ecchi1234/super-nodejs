@@ -1,10 +1,10 @@
 import { config } from 'dotenv'
-import argv from 'minimist'
-const options = argv(process.argv.slice(2))
 
-export const isProduction = Boolean(options.env && options.env === 'production')
+const env = process.env.NODE_ENV
+
+export const isProduction = Boolean(env === 'production')
 config({
-  path: options.env ? `.env.${options.env}` : '.env'
+  path: env ? `.env.${env}` : '.env'
 })
 
 export const envConfig = {
