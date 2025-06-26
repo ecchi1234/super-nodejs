@@ -7,18 +7,20 @@ import { useEffect } from "react";
 function App() {
   useEffect(() => {
     const controller = new AbortController();
-    axios
-      .get("/users/me", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
+    for (let i = 0; i < 200; i++) {
+      axios
+        .get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
 
-        baseURL: import.meta.env.VITE_API_URL,
-        signal: controller.signal,
-      })
-      .then((res) => {
-        localStorage.setItem("profile", JSON.stringify(res.data.result));
-      });
+          baseURL: import.meta.env.VITE_API_URL,
+          signal: controller.signal,
+        })
+        .then((res) => {
+          localStorage.setItem("profile", JSON.stringify(res.data.result));
+        });
+    }
 
     return () => {
       controller.abort();

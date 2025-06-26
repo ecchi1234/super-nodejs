@@ -15,7 +15,8 @@ import searchRouter from '~/routes/search.routes'
 import { createServer } from 'http'
 import conversationsRouter from '~/routes/conversations.routes'
 import helmet from 'helmet'
-import initSocket from './utils/socket'
+import initSocket from '~/utils/socket'
+import rateLimit from 'express-rate-limit'
 // import YAML from 'yaml'
 // import fs from 'fs'
 // import path from 'path'
@@ -55,7 +56,15 @@ const openapiSpecification = swaggerJsdoc(options)
 const port = envConfig.port
 
 const app = express()
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers.
 
+  // store: ... , // Redis, Memcached, etc. See below.
+})
+app.use(limiter) // Giới hạn số lượng request từ mỗi IP để bảo vệ ứng dụng khỏi tấn công DDoS
 app.use(helmet()) // Bảo mật ứng dụng Express bằng cách thiết lập các tiêu đề HTTP an toàn
 
 const corsOptions: CorsOptions = {
