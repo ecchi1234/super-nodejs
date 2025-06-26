@@ -4,16 +4,17 @@ import databaseService from '~/services/database.services'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouter from '~/routes/medias.routes'
 import { initFolder } from '~/utils/file'
-import { envConfig } from '~/constants/config'
+import { envConfig, isProduction } from '~/constants/config'
 import { UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import staticRouter from '~/routes/static.routes'
-import cors from 'cors'
+import cors, { CorsOptions } from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouter from '~/routes/bookmarks.routes'
 import likesRouter from '~/routes/likes.routes'
 import searchRouter from '~/routes/search.routes'
 import { createServer } from 'http'
 import conversationsRouter from '~/routes/conversations.routes'
+import helmet from 'helmet'
 import initSocket from './utils/socket'
 // import YAML from 'yaml'
 // import fs from 'fs'
@@ -54,8 +55,14 @@ const openapiSpecification = swaggerJsdoc(options)
 const port = envConfig.port
 
 const app = express()
+
+app.use(helmet()) // Bảo mật ứng dụng Express bằng cách thiết lập các tiêu đề HTTP an toàn
+
+const corsOptions: CorsOptions = {
+  origin: isProduction ? envConfig.clientUrl : '*' // Chỉ cho phép origin từ envConfig.corsOrigin trong môi trường production
+}
+app.use(cors(corsOptions))
 const httpServer = createServer(app)
-app.use(cors())
 
 databaseService.connect().then(() => {
   databaseService.indexUsers()
