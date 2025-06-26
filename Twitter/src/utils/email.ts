@@ -1,16 +1,15 @@
 /* eslint-disable no-undef */
 import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses'
-import { config } from 'dotenv'
+import { envConfig } from '~/constants/config'
 import fs from 'fs'
 import path from 'path'
 
-config()
 // Create SES service object.
 const sesClient = new SESClient({
-  region: process.env.AWS_REGION,
+  region: envConfig.awsRegion,
   credentials: {
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string
+    secretAccessKey: envConfig.awsSecretAccessKey,
+    accessKeyId: envConfig.awsAccessKeyId
   }
 })
 
@@ -58,7 +57,7 @@ const createSendEmailCommand = ({
 
 const sendVerifyEmail = (toAddress: string, subject: string, body: string) => {
   const sendEmailCommand = createSendEmailCommand({
-    fromAddress: process.env.SES_FROM_ADDRESS as string,
+    fromAddress: envConfig.sesFromAddress as string,
     toAddresses: toAddress,
     body,
     subject
@@ -79,7 +78,7 @@ export const sendVerifyRegisterEmail = (
       .replace('{{title}}', 'Please verify your email')
       .replace('{{content}}', 'Click the button below to verify your email address.')
       .replace('{{titleLink}}', `Verify`)
-      .replace('{{link}}', `${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}`) // TODO: add email token
+      .replace('{{link}}', `${envConfig.clientUrl}/verify-email?token=${email_verify_token}`) // TODO: add email token
   )
 }
 
@@ -98,6 +97,6 @@ export const sendForgotPasswordEmail = (
       )
       .replace('{{content}}', 'Click the button below to reset your password.')
       .replace('{{titleLink}}', `Reset Password`)
-      .replace('{{link}}', `${process.env.CLIENT_URL}/forgot-password?token=${forgot_password_token}`) // TODO: add email token
+      .replace('{{link}}', `${envConfig.clientUrl}/forgot-password?token=${forgot_password_token}`) // TODO: add email token
   )
 }

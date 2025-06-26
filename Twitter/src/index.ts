@@ -4,7 +4,7 @@ import databaseService from '~/services/database.services'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouter from '~/routes/medias.routes'
 import { initFolder } from '~/utils/file'
-import { config } from 'dotenv'
+import { envConfig } from '~/constants/config'
 import { UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import staticRouter from '~/routes/static.routes'
 import cors from 'cors'
@@ -51,9 +51,7 @@ const options: swaggerJsdoc.Options = {
 
 const openapiSpecification = swaggerJsdoc(options)
 
-config()
-
-const port = process.env.PORT || 4000
+const port = envConfig.port
 
 const app = express()
 const httpServer = createServer(app)

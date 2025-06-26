@@ -6,7 +6,7 @@ import { signToken, verifyToken } from '~/utils/jwt'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
-import { config } from 'dotenv'
+import { envConfig } from '~/constants/config'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
@@ -14,7 +14,6 @@ import Follower from '~/models/schemas/Follower.schema'
 import axios from 'axios'
 import { sendForgotPasswordEmail, sendVerifyRegisterEmail } from '~/utils/email'
 
-config()
 class UsersService {
   private signAccessToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
@@ -23,10 +22,10 @@ class UsersService {
         token_type: TokenType.AccessToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string,
+      privateKey: envConfig.jwtSecretAccessToken as string,
       options: {
         algorithm: 'HS256',
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN
+        expiresIn: envConfig.accessTokenExpiresIn
       }
     })
   }
@@ -40,7 +39,7 @@ class UsersService {
           verify,
           exp
         },
-        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
+        privateKey: envConfig.jwtSecretRefreshToken as string,
         options: {
           algorithm: 'HS256'
         }
@@ -52,10 +51,10 @@ class UsersService {
         token_type: TokenType,
         verify
       },
-      privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
+      privateKey: envConfig.jwtSecretRefreshToken as string,
       options: {
         algorithm: 'HS256',
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN
+        expiresIn: envConfig.refreshTokenExpiresIn
       }
     })
   }
@@ -67,10 +66,10 @@ class UsersService {
         token_type: TokenType.EmailVerifyToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
+      privateKey: envConfig.jwtSecretEmailVerifyToken as string,
       options: {
         algorithm: 'HS256',
-        expiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN
+        expiresIn: envConfig.emailVerifyTokenExpiresIn
       }
     })
   }
@@ -82,10 +81,10 @@ class UsersService {
         token_type: TokenType.ForgotPasswordToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      privateKey: envConfig.jwtSecretForgotPasswordToken as string,
       options: {
         algorithm: 'HS256',
-        expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN
+        expiresIn: envConfig.forgotPasswordTokenExpiresIn
       }
     })
   }
@@ -95,7 +94,7 @@ class UsersService {
   }
 
   private decodeRefreshToken(refresh_token: string) {
-    return verifyToken({ token: refresh_token, secretOrPublickey: process.env.JWT_SECRET_REFRESH_TOKEN as string })
+    return verifyToken({ token: refresh_token, secretOrPublickey: envConfig.jwtSecretRefreshToken as string })
   }
 
   async register(payload: RegisterReqBody) {
@@ -142,9 +141,9 @@ class UsersService {
   private async getOauthGoogleToken(code: string) {
     const body = {
       code,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      client_id: envConfig.googleClientId,
+      client_secret: envConfig.googleClientSecret,
+      redirect_uri: envConfig.googleRedirectUri,
       grant_type: 'authorization_code'
     }
 
