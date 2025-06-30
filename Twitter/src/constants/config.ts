@@ -1,11 +1,29 @@
 import { config } from 'dotenv'
+import fs from 'fs'
+import path from 'path'
 
 const env = process.env.NODE_ENV
+const envFileName = `.env.${env}`
+if (!env) {
+  console.log(`Bạn chưa thiết lập biến môi trường NODE_ENV (ví dụ development, production)`)
+  console.log(`Phát hiện NODE_ENV là ${env}`)
+  process.exit(1)
+}
 
-export const isProduction = Boolean(env === 'production')
+console.log(`Phát hiện NODE_ENV là = ${env}, vì thế sẽ sử dụng file cấu hình môi trường là ${envFileName}`)
+
+if (!fs.existsSync(path.resolve(envFileName))) {
+  console.log(
+    `Không tìm thấy file cấu hình môi trường ${envFileName}. Vui lòng tạo file này với các biến môi trường cần thiết.`
+  )
+  console.log(`Lưu ý: App không dùng file .env, ví dụ môi trường là development thì bạn cần tạo file .env.development`)
+  console.log(`Vui lòng tạo file ${envFileName} và tham khảo nội dung ở file .env.example`)
+  process.exit(1)
+}
 config({
-  path: env ? `.env.${env}` : '.env'
+  path: envFileName
 })
+export const isProduction = Boolean(env === 'production')
 
 export const envConfig = {
   port: (process.env.PORT as string) || '4000',
