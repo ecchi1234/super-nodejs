@@ -22,15 +22,8 @@ jobs:
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Push the Docker image
         run: docker push ecchi1234/twitter:v0
-      - name: SSH to VPS and update container
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VPS_HOST }} # có thể là IP Tailscale
-          username: ${{ secrets.VPS_USER }} # ví dụ: ubuntu
-          key: ${{ secrets.VPS_SSH_KEY }} # SSH Private Key (dán vào secrets)
-          port: 22 # nếu bạn dùng port khác thì sửa
-          script: |
-            docker pull ecchi1234/twitter:v0
-            docker stop twitter || true
-            docker rm twitter || true
-            docker run -d --name twitter -p 3000:3000 ecchi1234/twitter:v0
+      - name: Pull image and restart container
+        run: |
+          docker stop twitter || true
+          docker rm twitter || true
+          docker run -d --name twitter -p 3000:3000 ecchi1234/twitter:v0
