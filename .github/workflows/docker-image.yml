@@ -38,4 +38,4 @@ jobs:
             docker pull ecchi1234/twitter:v0
             docker stop twitter || true
             docker rm twitter || true
-            docker run -dp 3000:3000 --name twitter -v ~/super-nodejs/Twitter/uploads:/app/uploads ecchi1234/twitter:v0
+            docker run -dp 3000:3000 --name twitter --restart unless-stopped -v ~/super-nodejs/Twitter/uploads:/app/uploads ecchi1234/twitter:v0
